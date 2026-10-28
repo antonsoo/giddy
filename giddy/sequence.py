@@ -336,7 +336,7 @@ class Sequence:
         """
         y_str = []
         for i in y_int:
-            y_str.append("".join(list(map(str, i))))
+            y_str.append(",".join(map(str, i)))
 
         moves_str, unique_indices = np.unique(y_str, axis=0, return_index=True)
         moves_int = y_int[unique_indices]

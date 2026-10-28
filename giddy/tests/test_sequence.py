@@ -161,3 +161,21 @@ def test_sequence_equal():
         ]
     )
     np.testing.assert_allclose(seq_tran.seq_dis_mat, seq_dis_mat)
+
+
+@pytest.mark.parametrize("dist_type", ["interval", "arbitrary"])
+@pytest.mark.parametrize("strings", [False, True])
+def test_sequence_multidigit_states(dist_type, strings):
+    if strings:
+        # The final sequence also checks support for unequal lengths.
+        sequences = ["BK", "LA", "ABCDEFGHIJKL"]
+    else:
+        sequences = [[1, 10], [11, 0]] + [[i, i] for i in range(12)]
+
+    result = Sequence(sequences, dist_type=dist_type)
+
+    assert result.k == 12
+    expected = 20 if dist_type == "interval" else 1
+    assert result.seq_dis_mat[0, 1] == expected
+    np.testing.assert_array_equal(result.seq_dis_mat, result.seq_dis_mat.T)
+    np.testing.assert_array_equal(np.diag(result.seq_dis_mat), 0)
