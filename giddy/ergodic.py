@@ -204,11 +204,8 @@ def _mfpt_ergodic(P):
 
     P = np.asarray(P)
     k = P.shape[0]
-    A = np.zeros_like(P)
     ss = _steady_state_ergodic(P)
-    for j in range(k):
-        A[:, j] = ss
-    A = A.transpose()
+    A = np.tile(ss, (k, 1))
     i = np.identity(k)
     Z = la.inv(i - P + A)
     E = np.ones_like(Z)

@@ -33,6 +33,16 @@ class TestSteadyState:
 
 
 class TestMfpt:
+    @pytest.mark.parametrize("dtype", [np.int32, np.int64, bool])
+    @pytest.mark.parametrize("size", [2, 3, 4])
+    def test_mfpt_integer_cycle(self, dtype, size):
+        transition = np.roll(np.eye(size, dtype=dtype), 1, axis=1)
+        # Each step advances by one state; returning requires a full cycle.
+        expected = (np.arange(size)[None, :] - np.arange(size)[:, None]) % size
+        np.fill_diagonal(expected, size)
+
+        np.testing.assert_allclose(ergodic.mfpt(transition), expected)
+
     def setup_method(self):
         self.p = np.array([[0.5, 0.25, 0.25], [0.5, 0, 0.5], [0.25, 0.25, 0.5]])
         self.p2 = np.array([[0.5, 0.5, 0], [0.3, 0.7, 0], [0, 0, 1]])
